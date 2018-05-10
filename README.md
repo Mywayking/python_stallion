@@ -1,5 +1,5 @@
-## stallion
-Parsing ang page context.
+## Stallion
+Parsing any page context.
 
 **Use**
 ```
