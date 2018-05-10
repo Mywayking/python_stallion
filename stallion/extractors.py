@@ -95,19 +95,21 @@ class ContentExtractor(BaseExtractor):
 
 
 class UrlListExtractor(BaseExtractor):
+    def filer_url(self, url):
+        """
+        join abnormal url
+        """
+        url = url.strip()
+        if not url.startswith("http"):
+            return urljoin(self.article.url_domain, url)
+        return url
+
     def clean_url(self, url_list):
         """
         Clear non-url,Abnormal url add domain,delete duplicate
         """
-        url_out = []
-        for url in url_list:
-            url = url.strip()
-            if not url.startswith("http"):
-                url = urljoin(self.article.url_domain, url)
-            if url in url_out:
-                continue
-            url_out.append(url)
-        return url_out
+        url_out = [self.filer_url(url) for url in url_list]
+        return list(set(url_out))
 
     def get_urls(self):
         """

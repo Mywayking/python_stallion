@@ -11,7 +11,7 @@ from urllib.parse import urljoin
 
 
 def main():
-    s = Stallion(enable_urls=False)
+    s = Stallion(enable_urls=True)
     # a = s.extract("https://www.rtbasia.com/")
     a = s.extract("http://www.dytt8.net/")
     # print(a.content)
@@ -28,6 +28,12 @@ def test_urljoin():
     url = "http://www.dytt8.net/"
     url_sun = "http://www.dytt8.net/html/gndy/rihan/index.html"
     print(urljoin(url, "/html/gndy/jddy/20180503/56783.html"))
+
+
+def test_duplicate():
+    a = [1, 2, 2, 2, 3, 4, 5, 6, 6, 6, 6]
+    a = list(set(a))
+    print(a)
 
 
 if __name__ == "__main__":
