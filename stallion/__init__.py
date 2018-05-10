@@ -10,13 +10,15 @@ class Stallion(object):
     Main class
     """
 
-    @staticmethod
-    def extract(url=None):
+    def __init__(self, enable_urls=False):
+        self.enable_urls = enable_urls
+
+    def extract(self, url=None):
         """
         Main method to extract an article object from a URL,
         pass in a url and get back a Article
         """
-        cr = Crawler()
+        cr = Crawler(self.enable_urls)
         try:
             article = cr.crawl(url)
         except Exception as e:

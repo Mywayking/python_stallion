@@ -11,7 +11,7 @@ from urllib.parse import urljoin
 
 
 def main():
-    s = Stallion()
+    s = Stallion(enable_urls=False)
     # a = s.extract("https://www.rtbasia.com/")
     a = s.extract("http://www.dytt8.net/")
     # print(a.content)

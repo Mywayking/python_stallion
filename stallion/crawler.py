@@ -12,7 +12,10 @@ cleaner = Cleaner(meta=False, page_structure=False, safe_attrs_only=False)
 
 
 class Crawler(object):
-    def __init__(self):
+    def __init__(self, enable_urls=False):
+        # config
+        self.enable_urls = enable_urls
+
         # parser
         self.parser = get_parser
 
@@ -36,7 +39,7 @@ class Crawler(object):
         # html fetcher
         self.html_fetcher = HtmlFetcher()
 
-    def crawl(self, url):
+    def crawl(self, url, enable_url_extractor=False):
         raw_html = self.html_fetcher.get_html(url)
         if raw_html is None:
             return self.article
@@ -52,7 +55,8 @@ class Crawler(object):
         self.article.title = OutputFormatter.clean_content(self.title_extractor.extract())
         self.article.h1 = OutputFormatter.clean_content(self.h1_extractor.extract())
         self.article.content = OutputFormatter.clean_content(self.content_extractor.extract())
-        self.article.url_list = self.url_list_extractor.extract()
+        if self.enable_urls :
+            self.article.url_list = self.url_list_extractor.extract()
         return self.article
 
     def get_metas_extractor(self):
