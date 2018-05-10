@@ -4,9 +4,6 @@ class Article(object):
         self.meta_keywords = ""
         self.title = ""
         self.h1 = ""
-        self.domain = ""
-        self.links = []
-        self.image_url = []
         self.content = ""
 
     @property
@@ -16,9 +13,6 @@ class Article(object):
             "meta_keywords": self.meta_keywords,
             "title": self.title,
             "h1": self.h1,
-            "domain": self.domain,
-            "links": self.links,
-            "image_url": self.image_url,
             "content": self.content,
         }
         return data
