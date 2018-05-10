@@ -17,13 +17,11 @@ class Stallion(object):
         pass in a url and get back a Article
         """
         cr = Crawler()
-        article = cr.crawl(url)
-        # try:
-        #     cr = Crawler()
-        #     article = cr.crawl(url)
-        # except Exception as e:
-        #     print(e)
-        #     return None
+        try:
+            article = cr.crawl(url)
+        except Exception as e:
+            print(e)
+            return cr.article
         return article
 
     def shutdown_network(self):

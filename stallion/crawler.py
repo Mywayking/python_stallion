@@ -1,5 +1,5 @@
 from stallion.article import Article
-from stallion.extractors import TitleExtractor, H1Extractor, ContentExtractor, MetasExtractor
+from stallion.extractors import TitleExtractor, H1Extractor, ContentExtractor, MetasExtractor, UrlListExtractor
 from stallion.outputformat import OutputFormatter
 
 from stallion.network import HtmlFetcher
@@ -13,9 +13,9 @@ cleaner = Cleaner(meta=False, page_structure=False, safe_attrs_only=False)
 
 class Crawler(object):
     def __init__(self):
-        # config
         # parser
         self.parser = get_parser
+
         # article
         self.article = Article()
 
@@ -31,6 +31,8 @@ class Crawler(object):
         # content extractor
         self.content_extractor = self.get_content_extractor()
 
+        # url_list extractor
+        self.url_list_extractor = self.get_url_list_extractor()
         # html fetcher
         self.html_fetcher = HtmlFetcher()
 
@@ -38,6 +40,7 @@ class Crawler(object):
         raw_html = self.html_fetcher.get_html(url)
         if raw_html is None:
             return self.article
+        self.article.url_domain = url
         # filter js script
         raw_html = cleaner.clean_html(raw_html)
         doc = self.parser.raw_to_document(raw_html)
@@ -49,6 +52,7 @@ class Crawler(object):
         self.article.title = OutputFormatter.clean_content(self.title_extractor.extract())
         self.article.h1 = OutputFormatter.clean_content(self.h1_extractor.extract())
         self.article.content = OutputFormatter.clean_content(self.content_extractor.extract())
+        self.article.url_list = self.url_list_extractor.extract()
         return self.article
 
     def get_metas_extractor(self):
@@ -62,3 +66,6 @@ class Crawler(object):
 
     def get_content_extractor(self):
         return ContentExtractor(self.parser, self.article)
+
+    def get_url_list_extractor(self):
+        return UrlListExtractor(self.parser, self.article)

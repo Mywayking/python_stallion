@@ -3,3 +3,5 @@ __pycache__
 archive
 .pyc
 .idea
+stallion/extractors/
+stallion/__pycache__/

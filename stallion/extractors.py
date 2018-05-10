@@ -6,6 +6,7 @@
    Description:
 -------------------------------------------------
 """
+from urllib.parse import urljoin
 
 
 class BaseExtractor(object):
@@ -91,3 +92,32 @@ class ContentExtractor(BaseExtractor):
 
     def extract(self):
         return self.get_content()
+
+
+class UrlListExtractor(BaseExtractor):
+    def clean_url(self, url_list):
+        """
+        Clear non-url,Abnormal url add domain,delete duplicate
+        """
+        url_out = []
+        for url in url_list:
+            url = url.strip()
+            if not url.startswith("http"):
+                url = urljoin(self.article.url_domain, url)
+            if url in url_out:
+                continue
+            url_out.append(url)
+        return url_out
+
+    def get_urls(self):
+        """
+        Fetch the article title and analyze it
+        """
+        command = '//a/@href'
+        url_list = self.parser.xpathSelect(self.article.doc, command)
+        if url_list is not None and len(url_list) > 0:
+            return self.clean_url(url_list)
+        return []
+
+    def extract(self):
+        return self.get_urls()

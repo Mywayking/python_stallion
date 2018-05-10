@@ -9,3 +9,5 @@ class Parser(object):
     @staticmethod
     def xpathSelect(selector, xpath_lan):
         return selector.xpath(xpath_lan)
+
+
