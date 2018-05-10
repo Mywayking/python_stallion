@@ -49,7 +49,6 @@ class Crawler(object):
         self.article.title = OutputFormatter.clean_content(self.title_extractor.extract())
         self.article.h1 = OutputFormatter.clean_content(self.h1_extractor.extract())
         self.article.content = OutputFormatter.clean_content(self.content_extractor.extract())
-
         return self.article
 
     def get_metas_extractor(self):

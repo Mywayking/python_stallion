@@ -10,17 +10,20 @@ class Stallion(object):
     Main class
     """
 
-    def extract(self, url=None):
+    @staticmethod
+    def extract(url=None):
         """
         Main method to extract an article object from a URL,
         pass in a url and get back a Article
         """
-        try:
-            cr = Crawler()
-            article = cr.crawl(url)
-        except Exception as e:
-            print(e)
-            return None
+        cr = Crawler()
+        article = cr.crawl(url)
+        # try:
+        #     cr = Crawler()
+        #     article = cr.crawl(url)
+        # except Exception as e:
+        #     print(e)
+        #     return None
         return article
 
     def shutdown_network(self):
