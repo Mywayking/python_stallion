@@ -9,3 +9,5 @@ g = stallion()
 article = g.extract(url=url)
 article.title
 ```
+
+Galen _@20180510_
