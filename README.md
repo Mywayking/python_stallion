@@ -1,10 +1,10 @@
 ## Stallion
-Parsing any page context.
+Parsing any web page context.
 
 **Use**
 ```
 from stallion import Stallion
-url = 'http://edition.cnn.com/2012/02/22/world/europe/uk-occupy-london/index.html?hpt=ieu_c2'
+url = "https://www.rtbasia.com/"
 g = stallion()
 article = g.extract(url=url)
 article.title

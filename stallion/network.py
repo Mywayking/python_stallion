@@ -27,15 +27,38 @@ class HtmlFetcher(object):
     def get_html(self, url):
         # do request
         try:
-            response = requests.get(
-                url,
-                headers=self.headers, timeout=self.http_timeout)
-            response.encoding = response.apparent_encoding
-            response.keep_alive = False
-            html = response.text
+            req = requests.get(url, headers=self.headers, timeout=self.http_timeout)
+            if req.encoding == 'ISO-8859-1':
+                if req.apparent_encoding is not None:
+                    req.encoding = requests.utils.get_encodings_from_content(req.text)[0]
+                else:
+                    req.encoding = req.apparent_encoding
+            elif len(requests.utils.get_encodings_from_content(req.text)) > 0:
+                if requests.utils.get_encodings_from_content(req.text)[0] == "GBK":
+                    req.encoding = requests.utils.get_encodings_from_content(req.text)[0]
+            req.keep_alive = False
+            html = req.text
+            # print(html)
+
         except Exception as e:
             print(e)
             html = None
-        if html is not None:
-            return html
-        return None
+        # print(req.headers['content-type'])
+        # print("response内容的encoding编码:", req.encoding)
+        # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)
+        # print("response返回的html header标签里设置的编码:", requests.utils.get_encodings_from_content(req.text))
+        return html
+
+
+class FileFetcher(object):
+    @staticmethod
+    def get_html(url):
+        # do read
+        print(url)
+        try:
+            with open(url, "r", encoding="utf-8") as file_obj:
+                html = file_obj.read().strip()
+        except Exception as e:
+            print(e)
+            html = None
+        return html

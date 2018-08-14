@@ -10,18 +10,27 @@ from stallion import Stallion
 from urllib.parse import urljoin
 
 
+def page_code():
+    # GBK
+    url_gbk = "http://sh.news.163.com/18/0814/12/DP5U749G04188CSJ.html"
+
+
 def main():
-    s = Stallion(enable_urls=True)
+    s = Stallion()
     # a = s.extract("https://www.rtbasia.com/")
-    a = s.extract("http://www.dytt8.net/")
-    # print(a.content)
-    print(a.title)
-    print(a.h1)
-    print(a.meta_keywords)
-    print(a.meta_description)
+    # a = s.extract("http://www.dytt8.net/")
+    # a = s.extract("https://www.163.com/")
+    a = s.extract("https://blog.csdn.net/skiof007/article/details/55195434")
+    # a = s.extract("http://sh.news.163.com/18/0814/12/DP5U749G04188CSJ.html")
+    # # print(a.content)
+    print("title", a.title)
+    print("h1", a.h1)
+    print("meta_keywords", a.meta_keywords)
+    print("meta_description", a.meta_description)
+    print(a.content)
     # print(a.url_list)
-    for url in a.url_list:
-        print(url)
+    # for url in a.url_list:
+    #     print(url)
 
 
 def test_urljoin():

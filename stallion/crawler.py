@@ -1,18 +1,15 @@
-from stallion.article import Article
-from stallion.extractors import TitleExtractor, H1Extractor, ContentExtractor, MetasExtractor, UrlListExtractor
-from stallion.outputformat import OutputFormatter
+from .article import Article
+from .extractors import TitleExtractor, H1Extractor, ContentExtractor, MetasExtractor, UrlListExtractor
+from .outputformat import OutputFormatter, EliminateScript
 
-from stallion.network import HtmlFetcher
-from lxml.html.clean import Cleaner
-from stallion.parsers import Parser
+from .network import HtmlFetcher, FileFetcher
+from .parsers import Parser
 
 get_parser = Parser()
 
-cleaner = Cleaner(meta=False, page_structure=False, safe_attrs_only=False)
-
 
 class Crawler(object):
-    def __init__(self, enable_urls=False):
+    def __init__(self, is_file, enable_urls=False):
         # config
         self.enable_urls = enable_urls
 
@@ -37,15 +34,19 @@ class Crawler(object):
         # url_list extractor
         self.url_list_extractor = self.get_url_list_extractor()
         # html fetcher
-        self.html_fetcher = HtmlFetcher()
+        if is_file:
+            self.html_fetcher = FileFetcher()
+        else:
+            self.html_fetcher = HtmlFetcher()
 
-    def crawl(self, url, enable_url_extractor=False):
+    def crawl(self, url):
         raw_html = self.html_fetcher.get_html(url)
         if raw_html is None:
             return self.article
+        raw_html = EliminateScript().delete_all_tag(raw_html)
+        print(raw_html)
         self.article.url_domain = url
         # filter js script
-        raw_html = cleaner.clean_html(raw_html)
         doc = self.parser.raw_to_document(raw_html)
         self.article.raw_html = raw_html
         self.article.doc = doc
@@ -55,7 +56,7 @@ class Crawler(object):
         self.article.title = OutputFormatter.clean_content(self.title_extractor.extract())
         self.article.h1 = OutputFormatter.clean_content(self.h1_extractor.extract())
         self.article.content = OutputFormatter.clean_content(self.content_extractor.extract())
-        if self.enable_urls :
+        if self.enable_urls:
             self.article.url_list = self.url_list_extractor.extract()
         return self.article
 

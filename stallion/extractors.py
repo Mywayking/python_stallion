@@ -40,6 +40,7 @@ class MetasExtractor(BaseExtractor):
         """
         command = '//meta[translate(@name,"ABCDEFGHJIKLMNOPQRSTUVWXYZ",abcdefghjiklmnopqrstuvwxyz)="{0}"]/@content'.format(
             meta_name)
+        print(command)
         content = self.parser.xpathSelect(self.article.doc, command)
         if content is not None and len(content) > 0:
             return content[0].strip()
@@ -53,7 +54,7 @@ class MetasExtractor(BaseExtractor):
 
     def get_meta_keywords(self):
         """
-        if the article has meta keywords set in the source, use that
+        if the article has meta words set in the source, use that
         """
         return self.get_meta_content("keywords")
 

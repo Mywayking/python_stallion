@@ -2,7 +2,7 @@
 Extract the content of the web page
 """
 
-from stallion.crawler import Crawler
+from .crawler import Crawler
 
 
 class Stallion(object):
@@ -13,12 +13,12 @@ class Stallion(object):
     def __init__(self, enable_urls=False):
         self.enable_urls = enable_urls
 
-    def extract(self, url=None):
+    def extract(self, url, is_file=False):
         """
         Main method to extract an article object from a URL,
         pass in a url and get back a Article
         """
-        cr = Crawler(self.enable_urls)
+        cr = Crawler(is_file, self.enable_urls)
         try:
             article = cr.crawl(url)
         except Exception as e:
@@ -28,3 +28,7 @@ class Stallion(object):
 
     def shutdown_network(self):
         pass
+
+
+s = Stallion()
+extract = s.extract
