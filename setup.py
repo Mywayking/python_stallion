@@ -2,7 +2,7 @@
 
 
 from setuptools import setup, find_packages
-from stallion import __version__
+from stallions import __version__
 
 VERSION = __version__
 
