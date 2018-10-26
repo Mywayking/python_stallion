@@ -6,7 +6,7 @@
    Description:
 -------------------------------------------------
 """
-from stallion import Stallion
+from stallions import Stallion
 from urllib.parse import urljoin
 
 

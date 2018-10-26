@@ -3,7 +3,7 @@ Parsing any web page context.
 
 **Use**
 ```
-from stallion import Stallion
+from stallions import Stallion
 url = "https://www.rtbasia.com/"
 g = stallion()
 article = g.extract(url=url)

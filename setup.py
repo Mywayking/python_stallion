@@ -7,7 +7,7 @@ from stallions import __version__
 VERSION = __version__
 
 setup(
-    name='stallion',
+    name='stallions',
     version=VERSION,
     description='Extract the content of the web page.',
     license='',
