@@ -43,6 +43,7 @@ class HtmlFetcher(object):
         except Exception as e:
             print(e)
             html = None
+        # print(html)
         # print(req.headers['content-type'])
         # print("response内容的encoding编码:", req.encoding)
         # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)

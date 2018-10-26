@@ -44,9 +44,9 @@ class Crawler(object):
         if raw_html is None:
             return self.article
         raw_html = EliminateScript().delete_all_tag(raw_html)
-        # print(raw_html)
         self.article.url_domain = url
         # filter js script
+        # raw_html = cleaner.clean_html(raw_html)
         doc = self.parser.raw_to_document(raw_html)
         self.article.raw_html = raw_html
         self.article.doc = doc
