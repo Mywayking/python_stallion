@@ -6,3 +6,5 @@ archive
 stallion/extractors/
 stallion/__pycache__/
 note.txt
+dist
+stallions.egg-info

@@ -3,10 +3,9 @@ Parsing any web page context.
 
 ## Use
 ```
-from stallions import Stallion
+from stallions import extract
 url = "https://www.rtbasia.com/"
-g = Stallion()
-article = g.extract(url=url)
+article = extract(url=url)
 print("title", article.title)
 print("h1", article.h1)
 print("meta_keywords", article.meta_keywords)
