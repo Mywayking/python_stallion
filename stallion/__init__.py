@@ -3,6 +3,7 @@ Extract the content of the web page
 """
 
 from .crawler import Crawler
+from .version import __version__
 
 
 class Stallion(object):
