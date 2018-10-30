@@ -1,10 +1,5 @@
 """
--------------------------------------------------
-   Author :       galen
-   date：          2018/5/10
--------------------------------------------------
-   Description:
--------------------------------------------------
+Extractor
 """
 from urllib.parse import urljoin
 
@@ -35,7 +30,7 @@ class TitleExtractor(BaseExtractor):
 
 class MetasExtractor(BaseExtractor):
     def get_meta_content(self, meta_name):
-        """\
+        """
         Extract a given meta content form document
         """
         command = '//meta[translate(@name,"ABCDEFGHJIKLMNOPQRSTUVWXYZ",abcdefghjiklmnopqrstuvwxyz)="{0}"]/@content'.format(
