@@ -48,7 +48,7 @@ class HtmlFetcher(object):
             # print("response内容的encoding编码:", req.encoding)
             # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)
             # print("response返回的html header标签里设置的编码:", response_encoding_list)
-            print(req.encoding, req.apparent_encoding, response_encoding_list)
+            # print(req.encoding, req.apparent_encoding, response_encoding_list)
             if req.encoding == "ISO-8859-1":
                 req.encoding = self.get_encoding_type(req.apparent_encoding, response_encoding_list)
             # print(req.encoding)
