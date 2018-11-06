@@ -24,30 +24,41 @@ class HtmlFetcher(object):
         # set header
         self.headers = {'User-agent': random.choice(BROWSER_USER_AGENT)}
 
+    @staticmethod
+    def get_encoding_type(apparent_encoding, html_encoding_list):
+        #  utf-8 < GB2312、BIG5、GBK、GB18030
+        html_encoding = ''
+        if len(html_encoding_list) > 0:
+            html_encoding = html_encoding_list[0]
+        data_list = [apparent_encoding, html_encoding]
+        gbk_list = [x for x in data_list if "GB" in x.upper()]
+        if len(gbk_list) > 0:
+            return gbk_list[0]
+        utf_list = [x for x in data_list if "UTF" in x.upper()]
+        if len(utf_list) > 0:
+            return utf_list[0]
+        return 'UTF-8'
+
     def get_html(self, url):
         # do request
         try:
             req = requests.get(url, headers=self.headers, timeout=self.http_timeout)
-            if req.encoding == 'ISO-8859-1':
-                if req.apparent_encoding is not None:
-                    req.encoding = requests.utils.get_encodings_from_content(req.text)[0]
-                else:
-                    req.encoding = req.apparent_encoding
-            elif len(requests.utils.get_encodings_from_content(req.text)) > 0:
-                if requests.utils.get_encodings_from_content(req.text)[0] == "GBK":
-                    req.encoding = requests.utils.get_encodings_from_content(req.text)[0]
+            response_encoding_list = requests.utils.get_encodings_from_content(req.text)
+            # print(req.headers['content-type'])
+            # print("response内容的encoding编码:", req.encoding)
+            # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)
+            # print("response返回的html header标签里设置的编码:", response_encoding_list)
+            print(req.encoding, req.apparent_encoding, response_encoding_list)
+            if req.encoding == "ISO-8859-1":
+                req.encoding = self.get_encoding_type(req.apparent_encoding, response_encoding_list)
+            # print(req.encoding)
             req.keep_alive = False
             html = req.text
             # print(html)
-
         except Exception as e:
-            print(e)
+            print(e, "encoding error")
             html = None
         # print(html)
-        # print(req.headers['content-type'])
-        # print("response内容的encoding编码:", req.encoding)
-        # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)
-        # print("response返回的html header标签里设置的编码:", requests.utils.get_encodings_from_content(req.text))
         return html
 
 

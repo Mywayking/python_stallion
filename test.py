@@ -6,7 +6,7 @@
    Description:
 -------------------------------------------------
 """
-from stallions import Stallion
+from stallions import Stallion, extract
 from urllib.parse import urljoin
 
 
@@ -45,5 +45,32 @@ def test_duplicate():
     print(a)
 
 
+def spider_url():
+    """
+    """
+    url_list = [
+        # "http://www.liuxiaoer.com/lh/29192_2.html",  # ISO-8859-1 UTF-8-SIG []
+        # "https://www.iqiyi.com/v_19rrjepf9k.html",  # UTF-8 utf-8 ['utf-8']
+        # "http://so.sccnn.com/search/%E8%83%8C%E6%99%AF/29.html",  # ISO-8859-1 ISO-8859-1 ['Gb2312']
+        # "https://www.diyifanwen.com/tool/xingshiduilian/1132716293727642.htm",  # ISO-8859-1 GB2312 ['gb2312']
+        # "http://fun.youth.cn/gnzx/201811/t20181101_11770610_3.htm",  # ISO-8859-1 Windows-1254 ['UTF-8']
+        # "http://www.64365.com/ask/5366780.aspx", #utf-8 utf-8 ['utf-8']
+        "http://www.kanshuge.la/",  # utf-8 utf-8 ['utf-8']
+    ]
+    for url in url_list:
+        article = extract(url=url)
+        print(url)
+        # 提取 title
+        print("title", article.title)
+        # 提取 h1
+        print("h1", article.h1)
+        # 提取 meta_keywords
+        print("meta_keywords", article.meta_keywords)
+        # 提取 meta_description
+        print("meta_description", article.meta_description)
+        # 提取网页的整个页面内容
+        # print(article.content)
+
+
 if __name__ == "__main__":
-    main()
+    spider_url()

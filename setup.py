@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-
+"""
+python setup.py sdist upload -r pypi
+"""
 
 from setuptools import setup, find_packages
 from stallions import __version__
@@ -17,6 +19,7 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     url='https://git.rtbasia.com/galen/python_stallion',
     keywords='Web spider',
