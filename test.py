@@ -1,11 +1,3 @@
-"""
--------------------------------------------------
-   Author :       galen
-   date：          2018/5/9
--------------------------------------------------
-   Description:
--------------------------------------------------
-"""
 from stallions import Stallion, extract
 from urllib.parse import urljoin
 
@@ -62,7 +54,10 @@ def spider_url():
         # "http://www.shuaijiao.com/",  # utf-8 utf-8 ['utf-8']
         # "http://wx.xiaoziling.xyz/",  # utf-8 utf-8 ['utf-8']
         # "http://www.zshonghai.com.cn/",  # utf-8 utf-8 ['utf-8']
-        "https://www.sogou.com/link?url=TdXYaTdl0k6lQf0X3CwABpXSWeLyrmojVc4H97C172o.&rx=0&eae=0&fc=1936&brdim=0,109,0,109,1920,0,1920,911,1920,911&vis=1&rsz=d||eE|&abl=CS&ppjl=f&pfx=0&fu=8&bc=13&ifi=1&uci=1.ud8sh1wu23z3&xpc=fljDE0SUi6&p=http://www.unjs.com&dtd=159",  # utf-8 utf-8 ['utf-8']
+        # "http://www.unjs.com/Special/yubeidangyuan/",  # utf-8 utf-8 ['utf-8']
+        # "http://api.mobile.meituan.com/appupdate/download/simple/waimai?channel=8103&scheme=https",
+        "http://www.wo99.net/",
+        # utf-8 utf-8 ['utf-8']
     ]
     for url in url_list:
         article = extract(url=url, coding=True)
@@ -76,7 +71,7 @@ def spider_url():
         # 提取 meta_description
         print("meta_description", article.meta_description)
         # 提取网页的整个页面内容
-        # print(article.content)
+        print(article.content)
 
 
 if __name__ == "__main__":

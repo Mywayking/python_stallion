@@ -41,8 +41,16 @@ class HtmlFetcher(object):
 
     def get_html(self, url, coding=True):
         # do request
+        html = ''
         try:
             req = requests.get(url, headers=self.headers, timeout=self.http_timeout)
+            # print(req.url)
+            # print(req.encoding)
+            header = req.headers
+            # print(header)
+            # 剔除二进制
+            if header['Content-Type'] == 'application/octet-stream':
+                return html
             response_encoding_list = requests.utils.get_encodings_from_content(req.text)
             # print(req.headers['content-type'])
             # print("response内容的encoding编码:", req.encoding)
@@ -53,14 +61,12 @@ class HtmlFetcher(object):
                 print(req.encoding, req.apparent_encoding, response_encoding_list)
             if req.encoding == "ISO-8859-1":
                 req.encoding = self.get_encoding_type(req.apparent_encoding, response_encoding_list)
-            # print(req.encoding)
             req.keep_alive = False
-            html = req.text
+            return req.text
             # print(html)
         except Exception as e:
             print(e, "encoding error")
-            html = None
-        # print(html)
+        # print(html, 'html')
         return html
 
 

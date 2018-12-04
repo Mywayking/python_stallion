@@ -18,6 +18,8 @@ class EliminateScript:
     def delete_all_tag(html_raw):
         # <!--done-->  style script
         html_raw = EliminateScript.delete_notes(html_raw)
+        html_raw = EliminateScript.delete_tags(html_raw, "STYLE")
+        html_raw = EliminateScript.delete_tags(html_raw, "SCRIPT")
         html_raw = EliminateScript.delete_tags(html_raw, "style")
         return EliminateScript.delete_tags(html_raw, "script")
 
