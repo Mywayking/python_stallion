@@ -56,7 +56,8 @@ def spider_url():
         # "http://www.zshonghai.com.cn/",  # utf-8 utf-8 ['utf-8']
         # "http://www.unjs.com/Special/yubeidangyuan/",  # utf-8 utf-8 ['utf-8']
         # "http://api.mobile.meituan.com/appupdate/download/simple/waimai?channel=8103&scheme=https",
-        "http://www.wo99.net/",
+        # "http://www.wo99.net/",
+        "https://www.jikexueyuan.com/",
         # utf-8 utf-8 ['utf-8']
     ]
     for url in url_list:

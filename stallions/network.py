@@ -44,12 +44,10 @@ class HtmlFetcher(object):
         html = ''
         try:
             req = requests.get(url, headers=self.headers, timeout=self.http_timeout)
-            # print(req.url)
-            # print(req.encoding)
             header = req.headers
-            # print(header)
             # 剔除二进制
-            if header['Content-Type'] == 'application/octet-stream':
+            content_type = header.get('Content-type', None)
+            if content_type == 'application/octet-stream':
                 return html
             response_encoding_list = requests.utils.get_encodings_from_content(req.text)
             # print(req.headers['content-type'])
