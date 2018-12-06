@@ -1,7 +1,7 @@
 import requests
 import random
 
-HTTP_DEFAULT_TIMEOUT = 20
+HTTP_DEFAULT_TIMEOUT = 8
 BROWSER_USER_AGENT = [
     "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.67 Safari/537.36",
     "Mozilla/5.0 (X11; OpenBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
