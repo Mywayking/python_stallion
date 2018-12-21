@@ -57,7 +57,8 @@ def spider_url():
         # "http://www.unjs.com/Special/yubeidangyuan/",  # utf-8 utf-8 ['utf-8']
         # "http://api.mobile.meituan.com/appupdate/download/simple/waimai?channel=8103&scheme=https",
         # "http://www.wo99.net/",
-        "https://www.jikexueyuan.com/",
+        # "https://www.jikexueyuan.com/",
+        " https://m.toutiaocdn.cn/group/6592553741415612941/?iid=47687443492&app=news_article&timestamp=1540821841&group_id=6592553741415612941&tt_from=copy_link&utm_source=copy_link&utm_medium=t",
         # utf-8 utf-8 ['utf-8']
     ]
     for url in url_list:
