@@ -1,7 +1,7 @@
 import requests
 import random
 
-HTTP_DEFAULT_TIMEOUT = 8
+HTTP_DEFAULT_TIMEOUT = 4
 BROWSER_USER_AGENT = [
     "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.67 Safari/537.36",
     "Mozilla/5.0 (X11; OpenBSD i386) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
@@ -42,30 +42,34 @@ class HtmlFetcher(object):
     def get_html(self, url, coding=True):
         # do request
         html = ''
+        status = False
         try:
             req = requests.get(url, headers=self.headers, timeout=self.http_timeout)
             header = req.headers
             # 剔除二进制
             content_type = header.get('Content-type', None)
             if content_type == 'application/octet-stream':
-                return html
+                return html, status
             response_encoding_list = requests.utils.get_encodings_from_content(req.text)
             # print(req.headers['content-type'])
             # print("response内容的encoding编码:", req.encoding)
             # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)
             # print("response返回的html header标签里设置的编码:", response_encoding_list)
             # print(req.status_code)
+            if req.status_code >= 400:
+                return html, 0
+            status = 1
             if coding:
                 print(req.encoding, req.apparent_encoding, response_encoding_list)
             if req.encoding == "ISO-8859-1":
                 req.encoding = self.get_encoding_type(req.apparent_encoding, response_encoding_list)
             req.keep_alive = False
-            return req.text
             # print(html)
+            html = req.text
         except Exception as e:
             print(e, "encoding error")
         # print(html, 'html')
-        return html
+        return html, status
 
 
 class FileFetcher(object):

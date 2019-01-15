@@ -1,6 +1,7 @@
 class Article(object):
     def __init__(self):
         self.url_domain = ""
+        self.status = None
         self.meta_description = ""
         self.meta_keywords = ""
         self.title = ""

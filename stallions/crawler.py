@@ -40,8 +40,10 @@ class Crawler(object):
             self.html_fetcher = HtmlFetcher()
 
     def crawl(self, url, coding):
-        raw_html = self.html_fetcher.get_html(url, coding)
-        if raw_html is None or raw_html == '':
+        raw_html, self.article.status = self.html_fetcher.get_html(url, coding)
+        if self.article.status is None or self.article.status == 0:
+            return self.article
+        if raw_html == '':
             return self.article
         raw_html = EliminateScript.delete_all_tag(raw_html)
         self.article.url_domain = url

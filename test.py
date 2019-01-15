@@ -58,12 +58,16 @@ def spider_url():
         # "http://api.mobile.meituan.com/appupdate/download/simple/waimai?channel=8103&scheme=https",
         # "http://www.wo99.net/",
         # "https://www.jikexueyuan.com/",
-        " https://m.toutiaocdn.cn/group/6592553741415612941/?iid=47687443492&app=news_article&timestamp=1540821841&group_id=6592553741415612941&tt_from=copy_link&utm_source=copy_link&utm_medium=t",
+        # " https://m.toutiaocdn.cn/group/6592553741415612941/?iid=47687443492&app=news_article&timestamp=1540821841&group_id=6592553741415612941&tt_from=copy_link&utm_source=copy_link&utm_medium=t",
+        "https://www.baidu.com/s?ie=UTF-8&wd=http状态吗",
+        # "https://baike.baidu.com/item/HTTP%E7%8A%B6%E6%80%81%E7%A0%81/5053660?fr=aladdin",
+        # "https://v.qq.com/x/cover/c949qjcugx9a7gh.html",
         # utf-8 utf-8 ['utf-8']
     ]
     for url in url_list:
         article = extract(url=url, coding=True)
         print(url)
+        print(article.status)
         # 提取 title
         print("title", article.title)
         # 提取 h1
