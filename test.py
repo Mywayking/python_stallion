@@ -59,13 +59,15 @@ def spider_url():
         # "http://www.wo99.net/",
         # "https://www.jikexueyuan.com/",
         # " https://m.toutiaocdn.cn/group/6592553741415612941/?iid=47687443492&app=news_article&timestamp=1540821841&group_id=6592553741415612941&tt_from=copy_link&utm_source=copy_link&utm_medium=t",
-        "https://www.baidu.com/s?ie=UTF-8&wd=http状态吗",
+        # "https://finance.sina.com.cn/stock/jsy/2019-01-17/doc-ihqhqcis7016473.shtml",
         # "https://baike.baidu.com/item/HTTP%E7%8A%B6%E6%80%81%E7%A0%81/5053660?fr=aladdin",
         # "https://v.qq.com/x/cover/c949qjcugx9a7gh.html",
-        # utf-8 utf-8 ['utf-8']
+        # "http://auto.sina.com.cn/news/hy/2019-01-17/detail-ihqhqcis6939835.shtml",
+        # "https://v.youku.com/v_show/id_XNzA3MDk4Mjg0.html",
+        "https://www.zhihu.com/appview/v2/answer/507901751",
     ]
     for url in url_list:
-        article = extract(url=url, coding=True)
+        article = extract(url=url, coding=True, is_summary=True)
         print(url)
         print(article.status)
         # 提取 title
@@ -76,8 +78,10 @@ def spider_url():
         print("meta_keywords", article.meta_keywords)
         # 提取 meta_description
         print("meta_description", article.meta_description)
+        # 提取网页的主要内容
+        print('summary', article.summary)
         # 提取网页的整个页面内容
-        print(article.content)
+        print('content', article.content)
 
 
 if __name__ == "__main__":

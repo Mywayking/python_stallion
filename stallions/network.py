@@ -55,7 +55,7 @@ class HtmlFetcher(object):
             # print("response内容的encoding编码:", req.encoding)
             # print("response headers里设置的apparent_encoding编码:", req.apparent_encoding)
             # print("response返回的html header标签里设置的编码:", response_encoding_list)
-            # print(req.status_code)
+            print(req.status_code)
             if req.status_code >= 400:
                 return html, 0
             status = 1

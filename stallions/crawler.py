@@ -1,5 +1,6 @@
 from .article import Article
-from .extractors import TitleExtractor, H1Extractor, ContentExtractor, MetasExtractor, UrlListExtractor
+from .extractors import TitleExtractor, H1Extractor, SummaryExtractor, ContentExtractor, MetasExtractor, \
+    UrlListExtractor
 from .outputformat import OutputFormatter, EliminateScript
 
 from .network import HtmlFetcher, FileFetcher
@@ -31,6 +32,9 @@ class Crawler(object):
         # content extractor
         self.content_extractor = self.get_content_extractor()
 
+        # summary extractor
+        self.summary_extractor = self.get_summary_extractor()
+
         # url_list extractor
         self.url_list_extractor = self.get_url_list_extractor()
         # html fetcher
@@ -39,7 +43,7 @@ class Crawler(object):
         else:
             self.html_fetcher = HtmlFetcher()
 
-    def crawl(self, url, coding):
+    def crawl(self, url, coding, is_summary):
         raw_html, self.article.status = self.html_fetcher.get_html(url, coding)
         if self.article.status is None or self.article.status == 0:
             return self.article
@@ -58,6 +62,8 @@ class Crawler(object):
         self.article.title = OutputFormatter.clean_content(self.title_extractor.extract())
         self.article.h1 = OutputFormatter.clean_content(self.h1_extractor.extract())
         self.article.content = OutputFormatter.clean_content(self.content_extractor.extract())
+        if is_summary:
+            self.article.summary = OutputFormatter.clean_content(self.summary_extractor.extract())
         if self.enable_urls:
             self.article.url_list = self.url_list_extractor.extract()
         return self.article
@@ -70,6 +76,9 @@ class Crawler(object):
 
     def get_h1_extractor(self):
         return H1Extractor(self.parser, self.article)
+
+    def get_summary_extractor(self):
+        return SummaryExtractor(self.parser, self.article)
 
     def get_content_extractor(self):
         return ContentExtractor(self.parser, self.article)

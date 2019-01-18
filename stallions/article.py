@@ -7,6 +7,8 @@ class Article(object):
         self.title = ""
         self.h1 = ""
         self.content = ""
+        # 文章主要内容提取
+        self.summary = ""
         self.raw_html = ""
         self.url_list = []
 

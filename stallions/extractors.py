@@ -16,10 +16,10 @@ class BaseExtractor(object):
 class TitleExtractor(BaseExtractor):
     def get_title(self):
         """
-        Fetch the article title and analyze it
+        # Fetch the article title and analyze it
         """
         command = '//title/text()'
-        content = self.parser.xpathSelect(self.article.doc, command)
+        content = self.parser.xpath_select(self.article.doc, command)
         if content is not None and len(content) > 0:
             return content[0].strip()
         return ''
@@ -35,7 +35,7 @@ class MetasExtractor(BaseExtractor):
         """
         command = '//meta[translate(@name,"ABCDEFGHJIKLMNOPQRSTUVWXYZ",abcdefghjiklmnopqrstuvwxyz)="{0}"]/@content'.format(
             meta_name)
-        content = self.parser.xpathSelect(self.article.doc, command)
+        content = self.parser.xpath_select(self.article.doc, command)
         if content is not None and len(content) > 0:
             return content[0].strip()
         return ''
@@ -65,7 +65,7 @@ class H1Extractor(BaseExtractor):
         Fetch the article title and analyze it
         """
         command = '//h1/text()'
-        content = self.parser.xpathSelect(self.article.doc, command)
+        content = self.parser.xpath_select(self.article.doc, command)
         if content is not None and len(content) > 0:
             return content[0].strip()
         return ''
@@ -74,13 +74,28 @@ class H1Extractor(BaseExtractor):
         return self.get_h1()
 
 
+class SummaryExtractor(BaseExtractor):
+    def get_content(self):
+        """
+        Fetch the article title and analyze it
+        """
+        command = 'string()'
+        content = self.parser.html_select(self.article.raw_html, command)
+        if content is not None and len(content) > 0:
+            return content.strip()
+        return ''
+
+    def extract(self):
+        return self.get_content()
+
+
 class ContentExtractor(BaseExtractor):
     def get_content(self):
         """
         Fetch the article title and analyze it
         """
         command = 'string()'
-        content = self.parser.xpathSelect(self.article.doc, command)
+        content = self.parser.xpath_select(self.article.doc, command)
         if content is not None and len(content) > 0:
             return content.strip()
         return ''
@@ -111,7 +126,7 @@ class UrlListExtractor(BaseExtractor):
         Fetch the article title and analyze it
         """
         command = '//a/@href'
-        url_list = self.parser.xpathSelect(self.article.doc, command)
+        url_list = self.parser.xpath_select(self.article.doc, command)
         if url_list is not None and len(url_list) > 0:
             return self.clean_url(url_list)
         return []
