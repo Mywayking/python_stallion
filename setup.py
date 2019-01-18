@@ -24,9 +24,10 @@ setup(
     url='https://git.rtbasia.com/galen/python_stallion',
     keywords='Web spider',
     packages=find_packages(),
+    py_modules=['stallions'],
     install_requires=[
         'lxml',
         'requests',
-        'readability',
+        'readability=readability-lxml',
     ],
 )
