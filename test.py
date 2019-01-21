@@ -64,7 +64,11 @@ def spider_url():
         # "https://v.qq.com/x/cover/c949qjcugx9a7gh.html",
         # "http://auto.sina.com.cn/news/hy/2019-01-17/detail-ihqhqcis6939835.shtml",
         # "https://v.youku.com/v_show/id_XNzA3MDk4Mjg0.html",
-        "https://www.zhihu.com/appview/v2/answer/507901751",
+        # "https://www.zhihu.com/appview/v2/answer/507901751",
+        # "https://www.sohu.com/a/164810876_208076",
+        # "http://www.sohu.com/a/200229311_220283",
+        # "http://weitushe.com/xjmg/shot_spage_weitushe/get?tid=47354268",
+        "https://baijiahao.baidu.com/s?id=1623231191866727173&wfr=spider&for=pc",
     ]
     for url in url_list:
         article = extract(url=url, coding=True, is_summary=True)

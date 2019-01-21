@@ -8,6 +8,8 @@ from stallions import __version__
 
 VERSION = __version__
 
+readability_lxml = "readability-lxml"
+
 setup(
     name='stallions',
     version=VERSION,
@@ -24,10 +26,9 @@ setup(
     url='https://git.rtbasia.com/galen/python_stallion',
     keywords='Web spider',
     packages=find_packages(),
-    py_modules=['stallions'],
     install_requires=[
+        readability_lxml,
         'lxml',
         'requests',
-        'readability=readability-lxml',
     ],
 )
