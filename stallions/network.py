@@ -39,7 +39,7 @@ class HtmlFetcher(object):
             return utf_list[0]
         return 'UTF-8'
 
-    def get_html(self, url, coding=True):
+    def get_html(self, url, coding=False):
         # do request
         html = ''
         status = False
