@@ -22,7 +22,7 @@ class HtmlFetcher(object):
     def __init__(self):
         self.http_timeout = HTTP_DEFAULT_TIMEOUT
         # set header
-        self.headers = {'User-agent': random.choice(BROWSER_USER_AGENT)}
+        self.headers = {'User-agent': random.choice(BROWSER_USER_AGENT), 'Connection': 'close'}
 
     @staticmethod
     def get_encoding_type(apparent_encoding, html_encoding_list):
