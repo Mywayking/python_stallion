@@ -69,12 +69,19 @@ def spider_url():
         # "http://www.sohu.com/a/200229311_220283",
         # "http://weitushe.com/xjmg/shot_spage_weitushe/get?tid=47354268",
         # "https://baijiahao.baidu.com/s?id=1623231191866727173&wfr=spider&for=pc",
-        "http://www.mm131.com/qingchun/4182.html",
-        "http://www.mm131.com/chemo/",
+        # "http://www.mm131.com/qingchun/4182.html",
+        # "http://www.mm131.com/chemo/",
+        # "http://www.mm131.com/xinggan/1780.html",
+        # "http://www.mm131.com/",
+        # "https://www.toutiao.com/i6657296266847846925/",
+        # "http://www.9669.cn/",
+        "http://v.pptv.com/show/b3wsqxN56SeKCNQ.html",
+        "http://www.zuixu.com/gz/a/5583.html",
+        "http://henan.qq.com/a/20190225/002938.htm",
     ]
     for url in url_list:
         article = extract(url=url, coding=True, is_summary=True)
-        print(url)
+        print(article.url_domain)
         print(article.status)
         # 提取 title
         print("title", article.title)
@@ -88,6 +95,8 @@ def spider_url():
         print('summary', article.summary)
         # 提取网页的整个页面内容
         print('content', article.content)
+        print([article.status,article.title, article.h1, article.meta_keywords, article.meta_description, article.summary,
+               article.content])
 
 
 if __name__ == "__main__":

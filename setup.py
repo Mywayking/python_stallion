@@ -30,5 +30,6 @@ setup(
         readability_lxml,
         'lxml',
         'requests',
+        "fake-useragent",
     ],
 )
