@@ -1,6 +1,6 @@
 import requests
-import random
-from .config import BROWSER_USER_AGENT
+
+from .utils import get_user_agent
 
 HTTP_DEFAULT_TIMEOUT = 4
 
@@ -9,7 +9,15 @@ class HtmlFetcher(object):
     def __init__(self):
         self.http_timeout = HTTP_DEFAULT_TIMEOUT
         # set header
-        self.headers = {'User-agent': random.choice(BROWSER_USER_AGENT), 'Connection': 'close'}
+        self.use_agent = None
+        self.headers = {}
+
+    def _set_header(self, **kwargs):
+        if self.use_agent is None:
+            self.use_agent = get_user_agent(0)
+        self.headers = {'User-agent': self.use_agent, 'Connection': 'close'}
+        for k, v in kwargs.items():
+            self.headers[k] = v
 
     @staticmethod
     def get_encoding_type(apparent_encoding, html_encoding_list):
@@ -30,6 +38,7 @@ class HtmlFetcher(object):
         # do request
         html = ''
         status = False
+        self._set_header()
         try:
             req = requests.get(url, headers=self.headers, timeout=self.http_timeout)
             header = req.headers

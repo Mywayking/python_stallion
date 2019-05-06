@@ -4,6 +4,7 @@ Extract the content of the web page
 
 from .crawler import Crawler
 from .version import __version__
+from .config import IMAGE_TMP_SAVE
 
 
 class Stallion(object):

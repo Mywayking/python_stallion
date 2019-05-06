@@ -3,7 +3,7 @@ http://www.jikeren.com/body/yc.html 嵌套iframe
 
 python setup.py sdist upload -r pypi
 
-
+已经完成
 指定ua种类爬虫
 指定移动或者
 pc UA种类
