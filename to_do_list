@@ -9,3 +9,24 @@ python setup.py sdist upload -r pypi
 pc UA种类
 e.g.
 http://junshi.xilu.com/
+
+
+base64
+data:image/png;base64,
+
+图片要做的事情。
+图片过滤
+    - 去重。读取过滤或者链接过滤
+    - 大小。过滤
+    - 形状过滤，形状比例大于多少过滤。
+    - 图片位置过滤，去top N
+图片改变大小和形状。
+将图片读取成数组，传递得到redis.
+分布式处理。
+主控机做计算。因为爬虫机器没有能力。
+
+进行单元结构化，分步骤进行。
+1. 传入图片数据数组。list。
+    - base64数据
+    - 矩阵数据
+2. 传入url 进行测试。

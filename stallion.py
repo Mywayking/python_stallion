@@ -21,6 +21,7 @@ import os
 import random
 import re
 import shutil
+import uuid
 from io import BytesIO
 from urllib.parse import urljoin
 
@@ -31,6 +32,9 @@ from fake_useragent import UserAgent
 from lxml import etree
 from readability import Document
 
+IMAGE_TMP_SAVE = "/tmp/"
+
+# 基础配置
 # fake ua
 ua = UserAgent()
 ua_default = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36"
@@ -41,12 +45,12 @@ MOBILE_USER_AGENT = [
     "Mozilla/5.0 (Linux; Android 8.1; EML-AL00 Build/HUAWEIEML-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.143 Crosswalk/24.53.595.0 XWEB/358 MMWEBSDK/23 Mobile Safari/537.36 MicroMessenger/6.7.2.1340(0x2607023A) NetType/4G Language/zh_CN",
     "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-CN; BLA-AL00 Build/HUAWEIBLA-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.108 UCBrowser/11.9.4.974 UWS/2.13.1.48 Mobile Safari/537.36 AliApp(DingTalk/4.5.11)",
 ]
+
 HTTP_DEFAULT_TIMEOUT = 4
-IMAGE_TMP_SAVE = '/tmp'
 
 
 class Article:
-    def __init__(self, org_url):
+    def __init__(self, org_url=None):
         # 基础属性
         self.org_url = org_url
         # 页面属性
@@ -62,6 +66,7 @@ class Article:
         # 图片
         self.img_list = []
         self.img_dir = None
+        self.img_base_str = ''
 
         # the lxml Document object
         self.doc = None
@@ -151,6 +156,8 @@ def get_domain(url):
 
 def get_img_path(save_dir, url):
     # 创建图片路径
+    if save_dir is None:
+        save_dir = IMAGE_TMP_SAVE
     return os.path.join(save_dir, get_md5(url))
 
 
@@ -164,6 +171,8 @@ def get_img_dir(save_dir, url):
 
 
 def delete_file(path):
+    if not path:
+        return
     if os.path.exists(path):  # 如果文件存在
         shutil.rmtree(path)
     else:
@@ -190,6 +199,8 @@ def clean_img_link(page_url, url_list, is_base):
     if page_url in url_list:
         url_list.remove(page_url)
     for url in url_list:
+        if url.endswith(".gif") or url.endswith(".png"):
+            continue
         if url in img_list or url in base_list:
             continue
         if not url.startswith("http") and not url.startswith("data:"):
@@ -257,18 +268,19 @@ def image_bytes_shape_filter(img_content, threshold=100):
         im = Image.open(BytesIO(img_content))
         w, h = im.size
         # print(w, h)
-        if w < threshold or h < threshold or w > 1900:
-            return True
-        return False
+        if w < threshold or h < threshold:
+            return False
+        return im
     except:
         return True
 
 
-def base64_to_img(image_str, save_path='demo.jpg', filter_size=100):
+def imgbase64_to_img(image_str, save_path='demo.jpg', filter_size=100):
     """
     base64 字符串转 image
     data:image/png;base64,iVBOR
 
+    :param filter_size:
     :param image_str:
     :param save_path:
     :return:
@@ -290,7 +302,26 @@ def base64_to_img(image_str, save_path='demo.jpg', filter_size=100):
         fh.write(content)
 
 
-def request_download(url_img, save_path, referrer, user_agent, filter_size):
+def request_download(url_img, save_path, referrer, user_agent, filter_size, target_size=(299, 299)):
+    headers = {
+        "HOST": get_domain(referrer),
+        "Referer": referrer,
+        'User-Agent': user_agent,
+    }
+    r = requests.get(url_img, headers=headers, timeout=HTTP_DEFAULT_TIMEOUT)
+    if r.status_code != 200:
+        return
+    save_file = '{0}.jpg'.format(save_path)
+    img = image_bytes_shape_filter(r.content, filter_size)
+    if img is False:
+        return
+    if target_size:
+        img = img.resize(target_size, Image.ANTIALIAS)
+    img.save(save_file)
+    return save_file
+
+
+def request_download_base64(url_img, save_path, referrer, user_agent, filter_size):
     headers = {
         "HOST": get_domain(referrer),
         "Referer": referrer,
@@ -306,23 +337,26 @@ def request_download(url_img, save_path, referrer, user_agent, filter_size):
     # print(save_file)
     with open(save_file, 'wb') as f:
         f.write(r.content)
+    return save_file
 
 
-def get_img_by_xpath(url, selector, command, user_agent, is_base, img_num, img_dir, filter_size):
+def get_img_by_xpath(url, selector, command, user_agent, is_base, img_num, img_dir, filter_size,
+                     target_size=(299, 299)):
     img_list_org = selector.xpath(command)
     img_list, base_list = clean_img_link(url, img_list_org, is_base)
+    # print(img_list)
     if len(img_list) > img_num:
         img_list = img_list[0:img_num]
     for p in img_list:
         save_path = get_img_path(img_dir, p)
         try:
-            request_download(p, save_path, url, user_agent, filter_size)
+            request_download(p, save_path, url, user_agent, filter_size, target_size=target_size)
         except Exception as e:
             print(e, p)
     if is_base:
         for d in base_list:
             save_path = get_img_path(img_dir, d)
-            base64_to_img(d, save_path)
+            imgbase64_to_img(d, save_path)
     return img_list, base_list
 
 
@@ -383,10 +417,27 @@ def get_html(url, user_agent):
     return html, status
 
 
-def extract(url, ua_type=0, is_summary=False, is_img=False, img_num=10, is_base=False, filter_size=300, save_dir=None,
-            is_keep=False):
+def extract_picture(url, ua_type=0, filter_size=200, is_keep=True, save_dir=None):
     """
+    下载单张图片
+    :param url:
+    :param ua_type:
+    :param filter_size:
+    :param is_keep:
+    :param save_dir:
+    :return:
+    """
+    user_agent = get_user_agent(ua_type)
+    save_path = get_img_path(save_dir, url)
+    save_file = request_download(url, save_path, url, user_agent, filter_size=filter_size)
+    if not is_keep:
+        delete_file(save_dir)
+    return save_file
 
+
+def extract(url, ua_type=0, is_summary=False, is_img=False, img_num=5, is_base=False, filter_size=300, save_dir=None,
+            is_img_base=False):
+    """
     :param url:
     :param ua_type:取值0 -> pc,1 -> mobile
     :param is_summary: 提取文章
@@ -395,7 +446,7 @@ def extract(url, ua_type=0, is_summary=False, is_img=False, img_num=10, is_base=
     :param is_base: 是否提取 base64图片
     :param filter_size:过滤最小尺寸
     :param save_dir:图片保存路径
-    :param is_keep:True 保存下载图片，Fasle 删除保存图片
+    :param is_img_base: 将图片转成base64文件
     :return:
     """
     article = Article(url)
@@ -406,6 +457,8 @@ def extract(url, ua_type=0, is_summary=False, is_img=False, img_num=10, is_base=
     article.status = 1
     raw_html = delete_all_tag(html)
     selector = etree.HTML(raw_html)
+    if selector is None:
+        return article
     article.meta_description = get_meta_content(selector, 'description')
     article.meta_keywords = get_meta_content(selector, "keywords")
     article.title = get_text_by_xpath(selector, '//title/text()')
@@ -415,34 +468,105 @@ def extract(url, ua_type=0, is_summary=False, is_img=False, img_num=10, is_base=
         article.summary = get_summary_by_xpath(raw_html, 'string()')
     if is_img:
         article.img_dir = get_img_dir(save_dir, url)
+        # print("下载图片", url)
         article.img_list, _ = get_img_by_xpath(url, selector, '//img/@src', user_agent, is_base,
                                                img_num, article.img_dir, filter_size)
-        if not is_keep:
-            delete_file(article.img_dir)
+        if is_img_base:
+            article.img_base_str = images_to_base64(article.img_dir)
     return article
+
+
+def img_to_base64(img_path):
+    """
+    img 转 base64
+    :param img_path:
+    :return:
+    """
+    with open(img_path, "rb") as imageFile:
+        img_str = base64.b64encode(imageFile.read())
+        return img_str.decode('utf-8')
+
+
+def images_to_base64(image_dir, delimiter='\t'):
+    """
+    图片转base64
+    :param image_dir:
+    :param delimiter:
+    :return:
+    """
+    if image_dir is None:
+        return ''
+    image_names = os.listdir(image_dir)
+    if len(image_names) <= 0:
+        return ''
+    img_path = [os.path.join(image_dir, x) for x in image_names if x.endswith('.jpg')]
+    data_list = []
+    for file in img_path:
+        data_list.append(img_to_base64(file))
+    return delimiter.join(data_list)
+
+
+def unique_name():
+    return uuid.uuid1().__str__().replace("-", '')
+
+
+def base64_to_img(image_str, save_path='demo.jpg'):
+    """
+    base64 字符串转 image
+    :param image_str:
+    :param save_path:
+    :return:
+    """
+    with open(save_path, "wb") as fh:
+        fh.write(base64.b64decode(image_str))
+
+
+def base64str_to_images(base64_str, save_dir=IMAGE_TMP_SAVE, delimiter='\t'):
+    """
+    base64字符串转图片，返回新存放目录
+    :param save_dir:
+    :param base64_str:
+    :param delimiter:
+    :return:
+    """
+    if base64_str is None:
+        return
+    if len(base64_str) <= 0:
+        return
+    image_base_list = base64_str.split(delimiter)
+    img_dir = os.path.join(save_dir, unique_name())
+    os.makedirs(img_dir, exist_ok=True)
+    for img_str in image_base_list:
+        ima_path = os.path.join(img_dir, "{0}.jpg".format(unique_name()))
+        base64_to_img(img_str, ima_path)
+    return img_dir
 
 
 if __name__ == "__main__":
     # raw_url = "http://www.le.com/ptv/vplay/26335580.html"
     # raw_url = "https://rtbasia.com/"
     # raw_url = "https://www.163.com/"
-    raw_url = "https://ent.163.com/19/0506/16/EEGN1F5Q00038FO9.html"
-    page = extract(url=raw_url, is_summary=True, is_img=True, is_keep=True,
-                   save_dir='/Users/wangchun/PycharmProjects/thanos/resources/tmp_image')
-    print(page.org_url)
-    print(page.status)
-    # 提取 title
-    print("title", page.title)
-    # 提取 h1
-    print("h1", page.h1)
-    # 提取 meta_keywords
-    print("meta_keywords", page.meta_keywords)
-    # 提取 meta_description
-    print("meta_description", page.meta_description)
-    # 提取网页的主要内容
-    print('summary', page.summary)
-    # 提取网页的整个页面内容
-    print('content', page.content)
-    print([page.status, page.title, page.h1, page.meta_keywords, page.meta_description,
-           page.summary,
-           page.content])
+    # raw_url = "https://ent.163.com/19/0506/16/EEGN1F5Q00038FO9.html"
+    # raw_url = "http://junshi.xilu.com/"
+    # page = extract(url=raw_url, ua_type=1, is_summary=True, is_img=True, is_keep=True,
+    #                save_dir='/Users/wangchun/PycharmProjects/thanos/resources/tmp_image')
+    # print(page.org_url)
+    # print(page.status)
+    # # 提取 title
+    # print("title", page.title)
+    # # 提取 h1
+    # print("h1", page.h1)
+    # # 提取 meta_keywords
+    # print("meta_keywords", page.meta_keywords)
+    # # 提取 meta_description
+    # print("meta_description", page.meta_description)
+    # # 提取网页的主要内容
+    # print('summary', page.summary)
+    # # 提取网页的整个页面内容
+    # print('content', page.content)
+    # print([page.status, page.title, page.h1, page.meta_keywords, page.meta_description,
+    #        page.summary,
+    #        page.content])
+    print(extract_picture(
+        'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2121206715,2955288754&fm=26&gp=0.jpg',
+        save_dir='/Users/wangchun/PycharmProjects/thanos/resources/tmp_image/'))
