@@ -23,7 +23,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    url='https://git.rtbasia.com/galen/python_stallion',
+    url='https://github.com/Mywayking/python_stallion',
     keywords='Web spider',
     packages=find_packages(),
     install_requires=[

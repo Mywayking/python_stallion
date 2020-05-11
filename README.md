@@ -1,4 +1,7 @@
 # Stallion
+
+[![Downloads](https://pepy.tech/badge/stallions)](https://pepy.tech/project/stallions)
+
 Parsing any web page context.
 
 ## Use
